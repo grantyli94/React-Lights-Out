@@ -37,9 +37,7 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
     for (let y = 0; y < nrows; y++) {
       let row = []
       for (let x = 0; x < ncols; x++) {
-        row.push(Math.random() - chanceLightStartsOn > 0
-        ? false
-        : true);
+        row.push(Math.random() - chanceLightStartsOn > 0);
       }
       initialBoard.push(row);
     }
@@ -69,37 +67,55 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
       };
 
       // TODO: Make a (deep) copy of the oldBoard
+      const newBoard = [...oldBoard]
 
       // TODO: in the copy, flip this cell and the cells around it
+      for (let row = y - 1; row <= y + 1; row++) {
+        flipCell(row, x, newBoard);
+      }
+
+      for (let col = x - 1; col <= x + 1; col++) {
+        flipCell(y, col, newBoard);
+      }
+
+      flipCell(y, x, newBoard);
 
       // TODO: return the copy
+      return newBoard;
     });
   }
 
   // if the game is won, just show a winning msg & render nothing else
-
-  // TODO
-
-  // make table board
-
-  return (
-    <div className = "Board">
+  
+  function boardHTML() {
+    return (
+      <div className = "Board">
       {board.map((row, y) => {
         return <tr>
               {row.map((cell, x) => {
-                return <Cell isLit={board[y][x]} key={`${y}, ${x}`} />
-              }) }
+                return <Cell 
+                          flipCellsAroundMe={flipCellsAround}
+                          coord={`${y}-${x}`}
+                          isLit={board[y][x]} 
+                          key={`${y}, ${x}`} 
+                       />
+              })}
               </tr>
       })}
-    </div>
-  );
+    </div>)
+  }
+  
+  return hasWon() ? "You win!" : boardHTML();
+  // TODO
+
+  // make table board
 }
 
 
 Board.defaultProps = {
   nrows: 5,
   ncols: 5,
-  chanceLightStartsOn: 0.5
+  chanceLightStartsOn: 0.75
 }
 
 export default Board;
