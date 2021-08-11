@@ -34,11 +34,26 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
   function createBoard() {
     let initialBoard = [];
     // TODO: create array-of-arrays of true/false values
+    for (let y = 0; y < nrows; y++) {
+      let row = []
+      for (let x = 0; x < ncols; x++) {
+        row.push(Math.random() - chanceLightStartsOn > 0
+        ? false
+        : true);
+      }
+      initialBoard.push(row);
+    }
     return initialBoard;
   }
 
   function hasWon() {
     // TODO: check the board in state to determine whether the player has won.
+    for (let y = 0; y < nrows; y++) {
+      for (let x = 0; x < ncols; x++) {
+        if (!board[y][x]) return false;
+      }
+    }
+    return true;
   }
 
   function flipCellsAround(coord) {
@@ -67,7 +82,24 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
   // make table board
 
-  // TODO
+  return (
+    <div className = "Board">
+      {board.map((row, y) => {
+        return <tr>
+              {row.map((cell, x) => {
+                return <Cell isLit={board[y][x]} key={`${y}, ${x}`} />
+              }) }
+              </tr>
+      })}
+    </div>
+  );
+}
+
+
+Board.defaultProps = {
+  nrows: 5,
+  ncols: 5,
+  chanceLightStartsOn: 0.5
 }
 
 export default Board;
